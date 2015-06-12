@@ -9,7 +9,7 @@ Example configuration:
 
 $schemes = [
   'sftpexample' => [
-    'type' => 'sftp',
+    'driver' => 'sftp',
     'config' => [
       'host' => 'example.com',
       'username' => 'username',

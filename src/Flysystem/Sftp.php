@@ -7,6 +7,8 @@
 
 namespace Drupal\flysystem_sftp\Flysystem;
 
+use Drupal\Core\Logger\RfcLogLevel;
+use Drupal\flysystem\Flysystem\Adapter\MissingAdapter;
 use Drupal\flysystem\Plugin\FlysystemPluginInterface;
 use Drupal\flysystem\Plugin\FlysystemUrlTrait;
 use League\Flysystem\Sftp\SftpAdapter;
@@ -41,7 +43,51 @@ class Sftp implements FlysystemPluginInterface {
    * {@inheritdoc}
    */
   public function getAdapter() {
-    return new SftpAdapter($this->configuration);
+    try {
+      $adapter = new SftpAdapter($this->configuration);
+      $adapter->connect();
+    }
+
+    catch (\Exception $e) {
+      $adapter = new MissingAdapter();
+    }
+
+    return $adapter;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function ensure($force = FALSE) {
+    try {
+      $adapter = new SftpAdapter($this->configuration);
+      $adapter->connect();
+    }
+
+    catch (\LogicException $e) {
+      return [[
+        'severity' => RfcLogLevel::ERROR,
+        'message' => 'Unable to login to the SFTP server %host:%port with the provided credentials.',
+        'context' => [
+          '%host' => $this->configuration['host'],
+          '%port' => isset($this->configuration['port']) ? $this->configuration['port'] : 22,
+        ],
+      ]];
+    }
+
+    catch (\RuntimeException $e) {
+      return [[
+        'severity' => RfcLogLevel::ERROR,
+        'message' => 'The root %root is invalid or does not exist on the SFTP server %host:%port.',
+        'context' => [
+          '%root' => $this->configuration['root'],
+          '%host' => $this->configuration['host'],
+          '%port' => isset($this->configuration['port']) ? $this->configuration['port'] : 22,
+        ],
+      ]];
+    }
+
+    return [];
   }
 
 }
