@@ -1,0 +1,7 @@
+name = Flysystem SFTP
+description = Provides an SFTP plugin for Flysystem.
+package = Flysystem
+core = 7.x
+php = 5.4
+
+dependencies[] = flysystem

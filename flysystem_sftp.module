@@ -1,0 +1,14 @@
+<?php
+
+/**
+ * Implements hook_flysystem_plugins().
+ */
+function flysystem_sftp_flysystem_plugins() {
+  $plugins = array(
+    'sftp' => array(
+      'class' => 'Drupal\flysystem_sftp\Flysystem\Sftp',
+    ),
+  );
+
+  return $plugins;
+}
