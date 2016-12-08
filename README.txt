@@ -20,6 +20,8 @@ $schemes = [
       // Optional
       'port' => 21,
       'timeout' => 10,
+
+      'externalUrlBase' => 'https://example.com/media',
     ],
     'cache' => TRUE, // Cache filesystem metadata.
   ],
